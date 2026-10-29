@@ -25,3 +25,12 @@ repo violates one of these rules, the review cites the guideline under the
 
 - [`guidelines/money.md`](guidelines/money.md) — money & currency handling
 - [`guidelines/typescript.md`](guidelines/typescript.md) — TypeScript service conventions
+
+### Commerce standards (opt-in)
+
+Domain rules for order, pricing, and inventory services. They live outside `guidelines/` so
+repositories that consume `guidelines/**/*.md` are unaffected; opt in explicitly with
+`coderabbit-demo/coderabbit-standards:commerce/**/*.md`.
+
+- [`commerce/orders-and-discounts.md`](commerce/orders-and-discounts.md) — order-line, discount, and redemption invariants
+- [`commerce/data-access.md`](commerce/data-access.md) — parameterized SQL, transactions, service boundaries
