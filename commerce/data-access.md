@@ -2,10 +2,13 @@
 
 ## Parameterized SQL only
 
-- Every value that reaches SQL is a bound parameter (`?` or `:name`). Never build SQL with
+- Every **value** that reaches SQL is a bound parameter (`?` or `:name`). Never build SQL with
   template literals, string concatenation, or `sql.raw` — including values that "look safe"
-  such as path IDs, discount codes, or sort keys.
-- Identifiers that must vary (sort column, direction) come from an explicit allow-list.
+  such as path IDs or discount codes.
+- **Identifiers** (column names, sort direction) cannot be bound parameters. When one must
+  vary, map the request input to a fixed, allow-listed identifier
+  (`{ price: "price_cents", name: "name" }[sort]`) and reject anything else with `400`. Never
+  interpolate the raw request value, even into `ORDER BY`.
 
 ## Validate before the database
 

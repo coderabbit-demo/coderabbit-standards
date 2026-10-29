@@ -36,6 +36,12 @@ negative-quantity line produces an impossible pick task and corrupts stock count
 
 ## Redemption is atomic
 
-- Checking `max_redemptions`, incrementing `times_redeemed`, and updating the order happen in
-  a single database transaction. A check followed by a separate write is a race condition
-  that lets a limited code be redeemed more times than allowed.
+- Reserve the redemption with a conditional increment and verify it succeeded:
+  `UPDATE discount_codes SET times_redeemed = times_redeemed + 1 WHERE code = ? AND
+  (max_redemptions IS NULL OR times_redeemed < max_redemptions)`, then require exactly one
+  affected row. Equivalent row locking (`SELECT … FOR UPDATE`) or serializable isolation is
+  acceptable.
+- The reservation and the order update happen in the same transaction, so a failure leaves
+  neither change behind.
+- Reading `times_redeemed`, comparing it in application code, and writing later is a race
+  condition: concurrent requests can redeem a limited code more times than allowed.
